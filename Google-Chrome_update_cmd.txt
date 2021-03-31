@@ -1,0 +1,1 @@
+if ! grep -q 'no-sandbox' /usr/share/applications/google-chrome.desktop; then sed -i "s/\(^Exec=\/usr\/bin\/google-chrome-stable.*\)/\1 --no-sandbox/" /usr/share/applications/google-chrome.desktop; fi
