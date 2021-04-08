@@ -1,0 +1,50 @@
+from vic import *
+import os
+import re
+import cv2
+
+def mainLoop(info, arr):
+	
+	print(str(MODBUSUINT[0]))
+	if MODBUSUINT[0] == None:
+	    MODBUSUINT[0]=0
+	
+	elif MODBUSUINT[0]==0:
+		SHOW_IMAGE(arr)
+		
+		target_dir="C:\VIC7000\CapImage"
+		if not os.path.isdir(target_dir):
+			os.mkdir(target_dir)
+		
+		dir_list = os.listdir(target_dir)
+		#print(dir_list)
+		#print(len(dir_list))
+		#dir_list.sort(key=lambda f: int(re.sub('\D', '', f)))
+		dir_list = sorted(dir_list,  key=lambda x: os.path.getctime(os.path.join(target_dir, x)))	
+		#print(dir_list)
+		#for i in range(0,len(dir_list)):
+		#	file_path_name = target_dir + "\\" + dir_list[i]
+		#	print(dir_list[i],os.path.getctime(file_path_name))
+		if len(dir_list) >= 200:
+			file_path_name = target_dir + "\\" + dir_list[0]
+			os.remove(file_path_name)
+		
+		#saved_image = cv2.cvtColor(arr,cv2.COLOR_RGB2BGR)
+		#temp_str=str(RT.CURRENT_TIME).replace(' ','_')
+		#time_str=temp_str.replace(':','-')
+		#save_dir=target_dir+"\\"+time_str+".bmp"
+		#print(save_dir)
+		#cv2.imwrite(save_dir, saved_image)
+		
+		SAVE_IMAGE('C:\VIC7000\CapImage',1)
+		MODBUSUINT[0]=MODBUSUINT[0]+1
+	
+	elif MODBUSUINT[0]>=19:
+	    MODBUSUINT[0]=0
+	
+	else:
+	    MODBUSUINT[0]=MODBUSUINT[0]+1
+	
+	
+	pass
+
