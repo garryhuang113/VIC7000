@@ -1,0 +1,76 @@
+from vic import *
+
+gas1_min_error={}
+gas_min_error={}
+
+title1='100'
+title2='50'
+title3='80'
+title4='50'
+title5='100'
+title6=''
+title7=''
+
+data1='1.17'
+data2='0.98'
+data3='0.78'
+data4='0.87'
+data5='0.79'
+data6=''
+data7='11'
+
+def mainLoop(info, arr):
+	
+	global gas_min_error,  gas1_min_error, title1, title2, title3, title4, title5, title6, title7, data1, data2, data3, data4, data5, data6, data7
+	
+	gas1_temp={}
+	GasErrorMinCheck(gas1_temp, title1, data1)
+	GasErrorMinCheck(gas1_temp, title2, data2)
+	GasErrorMinCheck(gas1_temp, title3, data3)
+	GasErrorMinCheck(gas1_temp, title4, data4)
+	GasErrorMinCheck(gas1_temp, title5, data5)
+	GasErrorMinCheck(gas1_temp, title6, data6)
+	
+	gas1_min_error=gas1_temp
+	gas2_min_error=gas1_temp
+	print(gas1_min_error)
+	gas_min_error['gas1']=gas1_min_error
+	gas_min_error['gas2']=gas1_min_error
+	print(gas_min_error)
+		
+	pass
+
+def GasErrorMinCheck(Gas_Temp_Dict, Title, Data):
+	
+	if Title=='' or Data=='':
+		pass
+	elif not Title in Gas_Temp_Dict.keys():
+		Gas_Temp_Dict[Title]=Data
+	elif float(Gas_Temp_Dict[Title]) > float(Data) and not float(Data)=='':
+		Gas_Temp_Dict[Title]=Data
+
+		
+def GetGasMinError(**kwargs):
+	
+	global gas_min_error
+	return_dict={}
+	
+	gas_no=kwargs['gas_no']
+	gas_no=gas_no.split(',')
+	gas_set_value=kwargs['gas_set_value']
+	gas_set_value=gas_set_value.split(',')
+	
+	if 	gas_no[0]=='' or gas_set_value[0]=='':
+		return {'Error':'There is no input parameter.'}
+	
+	for i in range(len(gas_no)):
+		for j in range(len(gas_set_value)):
+			try:
+				return_dict[gas_no[i]+'.'+gas_set_value[j]]=gas_min_error[gas_no[i]][gas_set_value[j]]
+			except:
+				if gas_no[i]=='' or gas_set_value[j]=='':
+					return {'Error':'There is error in input parameters. Please check them.'}
+				else:
+					return_dict[gas_no[i]+'.'+gas_set_value[j]]='Unknown Parameter'
+	
+	return return_dict
