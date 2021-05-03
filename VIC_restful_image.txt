@@ -1,0 +1,84 @@
+#Client DownLoad Image
+
+#method 1: binary (server only return image)
+import requests
+from PIL import Image
+import re
+
+data = { 'username':'admin', 'password':'123456', 'cmd':'req_call_python_function', 'func':'test_download_image' }
+r = requests.put('http://10.12.1.167/restful/put', data=data, stream=True)
+if r.status_code == 200:
+	ctype = re.sub('.*\/(.*)\;(.*)', r'\l', r.headers['Content-Type']
+	if ctype == 'png':
+		img = Image.open(r.raw)
+		img.save('a.png')
+	else:
+		print('json=',r.json())
+		
+***********************************************************************************************************************************
+#method 1 Server (VIC7000 Script)
+from vic import *
+
+def test_download_image(**args):
+	return CURRENT_IMAGE()
+
+def mainLoop(info, arr):
+	pass
+	
+-----------------------------------------------------------------------------------------------------------------------------------
+#method 2: base64 (server can return image and parameters)
+import requests
+from PIL import Image
+import base64
+import io
+
+data = { 'username':'admin', 'password':'123456', 'cmd':'req_call_python_function', 'func':'test_download_image' }
+r = requests.put('http://10.12.1.167/restful/put', data=data)
+if r.status_code == 200:
+	j = r.json()
+	data = base64.b64decode(j['img'])
+	img = Image.open(io.BytesIO(data))
+	print('res=',j['res'])
+	img.save('a.png')
+	
+***********************************************************************************************************************************
+#method 2 Server (VIC7000 Script)
+from vic import *
+def test_download_image(**args):
+	return {'res':'test','img':CURRENT_IMAGE()}
+	
+def mainLoop(info, arr):
+	pass
+	
+	
+===================================================================================================================================
+
+#Client UpLoad Image
+
+import requests
+from PIL import Image
+from io import BytesIO
+
+img = Image.open("C:\\VIC7000\\Demo_image\\VIC70001557907973860.bmp")
+output = BytesIO()
+img.save(output,"bmp")
+
+files = {
+			'username':(None,'admin'),
+			'password':(None,'123456'),
+			'cmd':(None,'req_call_python_function'),
+			'func':(None,'test_upload_image'),
+			'arg1':(None, 'arg1'),
+			'arg2':("bmp", open("C:\\VIC7000\\Demo_image\\VIC70001557907973860.bmp",'rb')),
+			'arg3':("bmp",output.getvalue())
+	}
+	
+r = requests.put('http://10.12.1.167/restful/put',  files = files)
+print('response.json()=',r.json())	
+
+***********************************************************************************************************************************
+#Server (VIC7000 Script)
+def test_upload_image(**args):
+	print('arg1=',args['arg1'])	
+	SHOW_IMAGE(args['arg2'])
+	return {"ret":0}	
